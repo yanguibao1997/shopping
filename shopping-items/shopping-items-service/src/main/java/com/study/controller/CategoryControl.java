@@ -5,11 +5,7 @@ import com.study.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.json.MappingJacksonValue;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -30,13 +26,22 @@ public class CategoryControl {
         return ResponseEntity.ok(categories);
     }
 
+    @GetMapping("/isname")
+    public ResponseEntity<String> isNodeName(@RequestParam(value = "name")String name){
+        List<Category> categories = categoryService.queryByName(name);
+        if(categories==null || categories.size()==0){
+//            ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            return ResponseEntity.status(HttpStatus.OK).body("true");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body("false");
+    }
 
-    /*@GetMapping("/list")
-    public MappingJacksonValue queryByParentId(@RequestParam(value = "pid",defaultValue = "0") Long parentId,String callback){
-        List<Category> categories = categoryService.queryByParentId(parentId);
-
-        MappingJacksonValue mappingJacksonValue=new MappingJacksonValue(categories);
-        mappingJacksonValue.setJsonpFunction(callback);
-        return mappingJacksonValue;
-    }*/
+    @PostMapping("/addcategory")
+    public ResponseEntity<Boolean> addCategory(@RequestBody Category category){
+        Boolean b = categoryService.addCategory(category);
+        if(b){
+            return ResponseEntity.status(HttpStatus.OK).body(true);
+        }
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(false);
+    }
 }

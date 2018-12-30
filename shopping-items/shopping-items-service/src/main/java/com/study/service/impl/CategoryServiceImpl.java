@@ -19,4 +19,19 @@ public class CategoryServiceImpl implements CategoryService {
         category.setParentId(parentId);
         return categoryMapper.select(category);
     }
+
+    @Override
+    public List<Category> queryByName(String name) {
+        Category category=new Category();
+        category.setName(name);
+        List<Category> selectbynames = categoryMapper.select(category);
+        return selectbynames;
+    }
+
+    @Override
+    public Boolean addCategory(Category category) {
+        int i = categoryMapper.insertSelective(category);
+        System.out.println(i);
+        return null;
+    }
 }

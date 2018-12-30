@@ -7,4 +7,8 @@ import java.util.List;
 public interface CategoryService {
 
     public List<Category> queryByParentId(Long parentId);
+
+    public List<Category> queryByName(String name);
+
+    public Boolean addCategory(Category category);
 }
