@@ -28,10 +28,30 @@ public class CategoryServiceImpl implements CategoryService {
         return selectbynames;
     }
 
+    /**
+     * 来修改节点为父节点
+     * @param category
+     */
+    @Override
+    public Boolean updateCategory(Category category) {
+        int i = categoryMapper.updateByPrimaryKeySelective(category);
+        if(i>0){
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public Category queryById(Long id) {
+        return categoryMapper.selectByPrimaryKey(id);
+    }
+
     @Override
     public Boolean addCategory(Category category) {
         int i = categoryMapper.insertSelective(category);
-        System.out.println(i);
-        return null;
+        if(i>0){
+            return true;
+        }
+        return false;
     }
 }

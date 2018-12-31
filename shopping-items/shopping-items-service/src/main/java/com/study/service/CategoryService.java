@@ -10,5 +10,9 @@ public interface CategoryService {
 
     public List<Category> queryByName(String name);
 
+    public Boolean updateCategory(Category category);
+
+    public Category queryById(Long id);
+
     public Boolean addCategory(Category category);
 }

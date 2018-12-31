@@ -1,5 +1,7 @@
 package com.study.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.study.pojo.Category;
 import com.study.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,7 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("category")
@@ -37,11 +41,25 @@ public class CategoryControl {
     }
 
     @PostMapping("/addcategory")
-    public ResponseEntity<Boolean> addCategory(@RequestBody Category category){
-        Boolean b = categoryService.addCategory(category);
-        if(b){
-            return ResponseEntity.status(HttpStatus.OK).body(true);
+    public ResponseEntity<Long> addCategory(@RequestBody Map map) throws IOException {
+        Object data = map.get("data");
+        ObjectMapper objectMapper=new ObjectMapper();
+        Category category = objectMapper.readValue(data.toString(), Category.class);
+
+
+        //        首先设置复建点  isParent为true
+        Long parentId = category.getParentId();
+        Category c = categoryService.queryById(parentId);
+        c.setIsParent(true);
+        Boolean parent_true = categoryService.updateCategory(c);
+        if(parent_true){
+            category.setId(null);
+            Boolean b = categoryService.addCategory(category);
+            if(b){
+                return ResponseEntity.status(HttpStatus.OK).body(parentId);
+            }
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
         }
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(false);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 }
