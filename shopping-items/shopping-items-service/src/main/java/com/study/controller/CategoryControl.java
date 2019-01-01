@@ -41,7 +41,7 @@ public class CategoryControl {
     }
 
     @PostMapping("/addcategory")
-    public ResponseEntity<Long> addCategory(@RequestBody Map map) throws IOException {
+    public ResponseEntity<Category> addCategory(@RequestBody Map map) throws IOException {
         Object data = map.get("data");
         ObjectMapper objectMapper=new ObjectMapper();
         Category category = objectMapper.readValue(data.toString(), Category.class);
@@ -56,7 +56,7 @@ public class CategoryControl {
             category.setId(null);
             Boolean b = categoryService.addCategory(category);
             if(b){
-                return ResponseEntity.status(HttpStatus.OK).body(parentId);
+                return ResponseEntity.status(HttpStatus.OK).body(category);
             }
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
         }
