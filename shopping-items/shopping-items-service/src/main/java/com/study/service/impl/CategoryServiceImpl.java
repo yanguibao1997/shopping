@@ -54,4 +54,19 @@ public class CategoryServiceImpl implements CategoryService {
         }
         return false;
     }
+
+    /**
+     * 修改方法
+     * @param id
+     * @param name
+     * @return
+     */
+    @Override
+    public Boolean updateCategory(Long id, String name) {
+        Category category=new Category();
+        category.setId(id);
+        category.setName(name);
+        int i = categoryMapper.updateByPrimaryKey(category);
+        return i>0;
+    }
 }

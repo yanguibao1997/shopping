@@ -15,4 +15,6 @@ public interface CategoryService {
     public Category queryById(Long id);
 
     public Boolean addCategory(Category category);
+
+    public Boolean updateCategory(Long id,String name);
 }

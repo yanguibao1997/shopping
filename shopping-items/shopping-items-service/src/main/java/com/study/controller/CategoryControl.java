@@ -62,4 +62,16 @@ public class CategoryControl {
         }
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
+
+    @PutMapping("/updatecategory")
+    public ResponseEntity<String> updateCategory(
+            @RequestParam("id") Long id,
+            @RequestParam("name") String name
+     ){
+        Boolean b = categoryService.updateCategory(id, name);
+        if(b){
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body("修改成功");
+        }
+        return ResponseEntity.status(HttpStatus.NOT_MODIFIED).body("修改失败");
+    }
 }
