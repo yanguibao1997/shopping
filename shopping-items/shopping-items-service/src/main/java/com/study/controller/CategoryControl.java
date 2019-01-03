@@ -77,6 +77,7 @@ public class CategoryControl {
     }
 
     @DeleteMapping("/deleteCategory")
+    @Transactional
     public ResponseEntity<String> deleteCategory(
             @RequestParam("id") Long id,
             @RequestParam("parentId") Long parentId
@@ -86,14 +87,14 @@ public class CategoryControl {
 //            删除成功后  如果子节点的数目为0   则将父节点设为文件
             int size = categoryService.queryByParentId(parentId).size();
             if(size>0){
-                ResponseEntity.status(HttpStatus.ACCEPTED).body("删除成功");
+                return ResponseEntity.status(HttpStatus.ACCEPTED).body("删除成功");
             }else{
 //                设置父节点为文件
                 Category category = categoryService.queryById(parentId);
                 category.setIsParent(false);
                 Boolean bo = categoryService.updateCategory(category);
                 if(bo){
-                    ResponseEntity.status(HttpStatus.ACCEPTED).body("删除成功");
+                    return ResponseEntity.status(HttpStatus.ACCEPTED).body("删除成功");
                 }
             }
         }
