@@ -7,6 +7,7 @@ import com.study.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -73,5 +74,29 @@ public class CategoryControl {
             return ResponseEntity.status(HttpStatus.ACCEPTED).body("修改成功");
         }
         return ResponseEntity.status(HttpStatus.NOT_MODIFIED).body("修改失败");
+    }
+
+    @DeleteMapping("/deleteCategory")
+    public ResponseEntity<String> deleteCategory(
+            @RequestParam("id") Long id,
+            @RequestParam("parentId") Long parentId
+    ){
+        Boolean b = categoryService.deleteCategory(id);
+        if(b){
+//            删除成功后  如果子节点的数目为0   则将父节点设为文件
+            int size = categoryService.queryByParentId(parentId).size();
+            if(size>0){
+                ResponseEntity.status(HttpStatus.ACCEPTED).body("删除成功");
+            }else{
+//                设置父节点为文件
+                Category category = categoryService.queryById(parentId);
+                category.setIsParent(false);
+                Boolean bo = categoryService.updateCategory(category);
+                if(bo){
+                    ResponseEntity.status(HttpStatus.ACCEPTED).body("删除成功");
+                }
+            }
+        }
+        return ResponseEntity.status(HttpStatus.NOT_MODIFIED).body("删除失败");
     }
 }

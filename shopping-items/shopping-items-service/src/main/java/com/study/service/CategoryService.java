@@ -17,4 +17,6 @@ public interface CategoryService {
     public Boolean addCategory(Category category);
 
     public Boolean updateCategory(Long id,String name);
+
+    public Boolean deleteCategory(Long id);
 }

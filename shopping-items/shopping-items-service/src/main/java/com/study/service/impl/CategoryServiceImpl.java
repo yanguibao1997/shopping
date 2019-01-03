@@ -66,7 +66,13 @@ public class CategoryServiceImpl implements CategoryService {
         Category category=new Category();
         category.setId(id);
         category.setName(name);
-        int i = categoryMapper.updateByPrimaryKey(category);
+        int i = categoryMapper.updateByPrimaryKeySelective(category);
+        return i>0;
+    }
+
+    @Override
+    public Boolean deleteCategory(Long id) {
+        int i = categoryMapper.deleteByPrimaryKey(id);
         return i>0;
     }
 }
