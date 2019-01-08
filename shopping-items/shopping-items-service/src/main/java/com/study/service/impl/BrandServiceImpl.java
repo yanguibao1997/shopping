@@ -29,7 +29,7 @@ public class BrandServiceImpl implements BrandService{
             example.setOrderByClause(sortBy + (isDes?" desc":" asc"));
         }
         if(StringUtils.isNotBlank(key)){
-            example.createCriteria().orLike("name",key).orEqualTo("letter",key.toUpperCase());
+            example.createCriteria().orLike("name","%"+key+"%").orEqualTo("letter",key.toUpperCase());
         }
         List<Brand> brands = brandMapper.selectByExample(example);
 
