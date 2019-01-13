@@ -12,6 +12,7 @@
         <module>shopping-gateway</module>
         <module>shopping-items</module>
         <module>shopping-common</module>
+        <module>shopping-upload</module>
     </modules>
     <packaging>pom</packaging>
 
