@@ -28,7 +28,7 @@ public class UploadTest {
 
     @Test
     public void testUpload() throws FileNotFoundException {
-        File file = new File("C:\\Users\\us\\Pictures\\Camera Roll\\ac18d31de25cd96a19cf29af707b2f89.jpg");
+        File file = new File("D:\\Documents\\Pictures\\Camera Roll\\head.jpg");
 
 
         // 上传并且生成缩略图
