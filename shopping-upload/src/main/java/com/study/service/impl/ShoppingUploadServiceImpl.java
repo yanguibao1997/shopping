@@ -1,9 +1,13 @@
 package com.study.service.impl;
 
+import com.github.tobato.fastdfs.domain.StorePath;
+import com.github.tobato.fastdfs.service.FastFileStorageClient;
 import com.study.controller.ShoppingUploadControl;
 import com.study.service.ShoppingUploadService;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,6 +25,9 @@ public class ShoppingUploadServiceImpl implements ShoppingUploadService {
     // 支持的文件类型
     private static final List<String> suffixes = Arrays.asList("image/png", "image/jpeg");
 
+    @Autowired
+    private FastFileStorageClient fastFileStorageClient;
+
     @Override
     public String uploadImage(MultipartFile file) {
         try{
@@ -37,16 +44,14 @@ public class ShoppingUploadServiceImpl implements ShoppingUploadService {
                 return null;
             }
 
-//            测试存放目录
-            File f=new File("E:\\test");
-            if(!f.exists()){
-                f.mkdirs();
-            }
+//          上传到FastDFS 返回路径
+//            文件后缀名
+            String suffix = StringUtils.substringAfterLast(file.getOriginalFilename(), ".");
+            StorePath storePath = fastFileStorageClient.uploadFile(file.getInputStream(), file.getSize(), suffix, null);
 
-            file.transferTo(new File(f,filename));
 
 //            下面进行上传  返回URL
-            String url="";
+            String url="http://image.shopping.com/"+storePath.getFullPath();
             return url;
         }catch (Exception e){
             return null;
