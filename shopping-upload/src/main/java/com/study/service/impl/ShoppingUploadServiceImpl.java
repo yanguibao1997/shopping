@@ -52,6 +52,7 @@ public class ShoppingUploadServiceImpl implements ShoppingUploadService {
 
 //            下面进行上传  返回URL
             String url="http://image.shopping.com/"+storePath.getFullPath();
+            System.out.println(url);
             return url;
         }catch (Exception e){
             return null;

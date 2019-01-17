@@ -41,11 +41,8 @@ public class CategoryControl {
     }
 
     @PostMapping("/addcategory")
-    public ResponseEntity<Category> addCategory(@RequestBody Map map) throws IOException {
-        Object data = map.get("data");
-        ObjectMapper objectMapper=new ObjectMapper();
-        Category category = objectMapper.readValue(data.toString(), Category.class);
-
+    public ResponseEntity<Category> addCategory(Category category
+    ) throws IOException {
 
         //        首先设置复建点  isParent为true
         Long parentId = category.getParentId();
