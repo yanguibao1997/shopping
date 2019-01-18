@@ -8,6 +8,8 @@ public interface CategoryService {
 
     public List<Category> queryByParentId(Long parentId);
 
+    public List<Category> queryByBid(Long bid);
+
     public List<Category> queryByName(String name);
 
     public Boolean updateCategory(Category category);

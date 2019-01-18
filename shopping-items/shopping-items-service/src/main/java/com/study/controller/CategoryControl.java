@@ -30,6 +30,17 @@ public class CategoryControl {
         return ResponseEntity.ok(categories);
     }
 
+
+    @GetMapping("/queryByBid/{bid}")
+    public ResponseEntity<List<Category>> queryByBid(@PathVariable("bid") Long bid){
+        List<Category> categories = categoryService.queryByBid(bid);
+        if(categories==null || categories.size()==0){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        return ResponseEntity.ok(categories);
+    }
+
+
     @GetMapping("/isname")
     public ResponseEntity<String> isNodeName(@RequestParam(value = "name")String name){
         List<Category> categories = categoryService.queryByName(name);

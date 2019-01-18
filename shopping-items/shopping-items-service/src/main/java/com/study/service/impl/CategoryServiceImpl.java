@@ -20,6 +20,16 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryMapper.select(category);
     }
 
+    /**
+     * 根据品牌的id   来查分类
+     * @param bid
+     * @return
+     */
+    @Override
+    public List<Category> queryByBid(Long bid) {
+        return categoryMapper.queryBybid(bid);
+    }
+
     @Override
     public List<Category> queryByName(String name) {
         Category category=new Category();
