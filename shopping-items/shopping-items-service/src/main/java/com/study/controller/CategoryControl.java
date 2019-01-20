@@ -52,8 +52,8 @@ public class CategoryControl {
     }
 
     @PostMapping("/addcategory")
-    public ResponseEntity<Category> addCategory(Category category
-    ) throws IOException {
+    @Transactional
+    public ResponseEntity<Category> addCategory(Category category) throws IOException {
 
         //        首先设置复建点  isParent为true
         Long parentId = category.getParentId();
@@ -72,6 +72,7 @@ public class CategoryControl {
     }
 
     @PutMapping("/updatecategory")
+    @Transactional
     public ResponseEntity<String> updateCategory(
             @RequestParam("id") Long id,
             @RequestParam("name") String name

@@ -3,8 +3,10 @@ package com.study.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.study.mapper.BrandMapper;
+import com.study.mapper.CategoryBrandMapper;
 import com.study.page.PageResult;
 import com.study.pojo.Brand;
+import com.study.pojo.CategoryBrand;
 import com.study.service.BrandService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,9 @@ public class BrandServiceImpl implements BrandService{
 
     @Autowired
     private BrandMapper brandMapper;
+
+    @Autowired
+    private CategoryBrandMapper categoryBrandMapper;
 
     @Override
     public PageResult<Brand> queryBrandByPage(String key, Integer pageNo, Integer pageSize, Boolean isDes, String sortBy) {
@@ -46,10 +51,26 @@ public class BrandServiceImpl implements BrandService{
     @Transactional
     public void addBrand(Brand brand, List<Long> cids) {
         brandMapper.insertSelective(brand);
-
         cids.forEach( cid -> {
 //            添加数据到  关联表
             brandMapper.insertCategoryBrand(cid,brand.getId());
         });
+    }
+
+    @Override
+    public void deleteCategoryBrandByBid(Long bid) {
+        CategoryBrand categoryBrand=new CategoryBrand();
+        categoryBrand.setBrandId(bid);
+        categoryBrandMapper.delete(categoryBrand);
+    }
+
+    @Override
+    public void updateBrandByid(Brand brand) {
+        brandMapper.updateByPrimaryKey(brand);
+    }
+
+    @Override
+    public void deleteBrandById(Long bid) {
+        brandMapper.deleteByPrimaryKey(bid);
     }
 }
