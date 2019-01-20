@@ -62,14 +62,17 @@ public class BrandControl {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @DeleteMapping("/deleteBrand/{bid}")
+    @DeleteMapping("/deleteBrand")
     @Transactional
-    public ResponseEntity<Void> deleteBrand(@PathVariable("bid") Long bid){
-        brandService.deleteBrandById(bid);
+    public ResponseEntity<Void> deleteBrand(@RequestParam("bids") List<Long> bids){
+        System.out.println(bids);
+
+        bids.forEach(bid -> {
+            brandService.deleteBrandById(bid);
 
 //      先根据品牌ID将原来中间表对应数据删除
-        brandService.deleteCategoryBrandByBid(bid);
-
+            brandService.deleteCategoryBrandByBid(bid);
+        });
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }
