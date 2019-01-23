@@ -4,6 +4,7 @@ import com.study.pojo.SpecGroup;
 import com.study.service.SpecGroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,13 +22,15 @@ public class SpecGroupControl {
         return ResponseEntity.ok(specGroups);
     }
 
-    @PostMapping("/addSpecGroup")
+    @PostMapping("/addOrUpdateSpecGroup")
+    @Transactional
     public ResponseEntity<Void> addSpecGroup(SpecGroup specGroup){
         specGroupService.addSpecGroup(specGroup);
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/updateSpecGroup")
+    @PutMapping("/addOrUpdateSpecGroup")
+    @Transactional
     public ResponseEntity<Void> updateSpecGroup(SpecGroup specGroup){
         specGroupService.updateSpecGroup(specGroup);
         return ResponseEntity.ok().build();
@@ -35,6 +38,7 @@ public class SpecGroupControl {
 
 
     @DeleteMapping("/deleteSpecGroup")
+    @Transactional
     public ResponseEntity<Void> deleteSpecGroup(@RequestParam("ids") List<Long> ids){
 
         ids.forEach(id -> {
