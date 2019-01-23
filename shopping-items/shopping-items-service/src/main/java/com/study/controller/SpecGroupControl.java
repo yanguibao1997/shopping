@@ -20,4 +20,26 @@ public class SpecGroupControl {
         List<SpecGroup> specGroups = specGroupService.queryBySpecGroupByCid(cid);
         return ResponseEntity.ok(specGroups);
     }
+
+    @PostMapping("/addSpecGroup")
+    public ResponseEntity<Void> addSpecGroup(SpecGroup specGroup){
+        specGroupService.addSpecGroup(specGroup);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/updateSpecGroup")
+    public ResponseEntity<Void> updateSpecGroup(SpecGroup specGroup){
+        specGroupService.updateSpecGroup(specGroup);
+        return ResponseEntity.ok().build();
+    }
+
+
+    @DeleteMapping("/deleteSpecGroup")
+    public ResponseEntity<Void> deleteSpecGroup(@RequestParam("ids") List<Long> ids){
+
+        ids.forEach(id -> {
+            specGroupService.deleteSpecGroup(id);
+        });
+        return ResponseEntity.ok().build();
+    }
 }

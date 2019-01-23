@@ -22,4 +22,20 @@ public class SpecGroupServiceImpl implements SpecGroupService {
         List<SpecGroup> specGroups = specGroupMapper.select(specGroup);
         return specGroups;
     }
+
+    @Override
+    public void addSpecGroup(SpecGroup specGroup) {
+        specGroup.setId(null);
+        specGroupMapper.insertSelective(specGroup);
+    }
+
+    @Override
+    public void updateSpecGroup(SpecGroup specGroup) {
+        specGroupMapper.updateByPrimaryKey(specGroup);
+    }
+
+    @Override
+    public void deleteSpecGroup(Long id) {
+        specGroupMapper.deleteByPrimaryKey(id);
+    }
 }

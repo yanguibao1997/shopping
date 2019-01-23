@@ -8,4 +8,10 @@ public interface SpecGroupService {
 
     public List<SpecGroup> queryBySpecGroupByCid(Long cid);
 
+    public void  addSpecGroup(SpecGroup specGroup);
+
+    public void  updateSpecGroup(SpecGroup specGroup);
+
+    public void  deleteSpecGroup(Long id);
+
 }
