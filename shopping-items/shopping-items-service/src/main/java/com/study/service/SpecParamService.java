@@ -8,4 +8,8 @@ import java.util.List;
 public interface SpecParamService {
 
     public List<SpecParam> querySpecParamByCidGid(Long cid,Long gid);
+
+    public void addSpecParam(SpecParam specParam);
+
+    public void updateSpecParam(SpecParam specParam);
 }
