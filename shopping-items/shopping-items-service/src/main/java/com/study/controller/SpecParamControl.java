@@ -33,8 +33,15 @@ public class SpecParamControl {
 
     @PutMapping("/addOrUpdateSpecParam")
     public ResponseEntity<Void> updateSpecParam(SpecParam specParam){
-        System.out.println(specParam);
         specParamService.updateSpecParam(specParam);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/deleteSpecParam")
+    public ResponseEntity<Void> deleteSpecParam(@RequestParam("ids") List<Long> ids){
+        ids.forEach( id -> {
+            specParamService.deleteSpecParam(id);
+        });
         return ResponseEntity.ok().build();
     }
 }

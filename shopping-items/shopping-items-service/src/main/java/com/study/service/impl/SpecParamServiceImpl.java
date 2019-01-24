@@ -30,4 +30,9 @@ public class SpecParamServiceImpl implements SpecParamService{
     public void updateSpecParam(SpecParam specParam) {
         specParamMapper.updateByPrimaryKey(specParam);
     }
+
+    @Override
+    public void deleteSpecParam(Long id) {
+        specParamMapper.deleteByPrimaryKey(id);
+    }
 }

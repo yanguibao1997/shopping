@@ -12,4 +12,6 @@ public interface SpecParamService {
     public void addSpecParam(SpecParam specParam);
 
     public void updateSpecParam(SpecParam specParam);
+
+    public void deleteSpecParam(Long id);
 }
