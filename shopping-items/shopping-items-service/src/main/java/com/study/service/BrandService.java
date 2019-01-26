@@ -18,4 +18,6 @@ public interface BrandService {
     public void updateBrandByid(Brand brand);
 
     public void deleteBrandById(Long bid);
+
+    public Brand queryBrandByBid(Long bid);
 }
