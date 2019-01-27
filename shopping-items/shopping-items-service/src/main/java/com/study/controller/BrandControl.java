@@ -75,4 +75,13 @@ public class BrandControl {
         });
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
+
+    @GetMapping("/queryBrandByCid")
+    public ResponseEntity<List<Brand>> queryBrandByCid(@RequestParam("cid") Long cid){
+        List<Brand> brands = brandService.queryBrandByCid(cid);
+        if(brands==null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.ok(brands);
+    }
 }

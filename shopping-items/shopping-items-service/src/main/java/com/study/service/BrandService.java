@@ -20,4 +20,6 @@ public interface BrandService {
     public void deleteBrandById(Long bid);
 
     public Brand queryBrandByBid(Long bid);
+
+    public List<Brand> queryBrandByCid(Long cid);
 }
