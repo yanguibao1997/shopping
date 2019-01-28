@@ -17,10 +17,16 @@ public class SpecParamControl {
 
     @GetMapping("/querySpecParamByCidGid")
     public ResponseEntity<List<SpecParam>> querySpecParamByCidGid(
-            @RequestParam ("cid") Long cid,
-            @RequestParam("gid") Long gid
+            @RequestParam (value = "cid",required = false) Long cid,
+            @RequestParam(value = "gid",required = false) Long gid
     ){
-        List<SpecParam> specParams = specParamService.querySpecParamByCidGid(cid, gid);
+        List<SpecParam> specParams=null;
+        if(cid!=null && gid!=null){
+            specParams = specParamService.querySpecParamByCidGidMine(cid, gid);
+        }else {
+            specParams = specParamService.querySpecParamByCidGid(cid, gid);
+        }
+
         return ResponseEntity.ok(specParams);
     }
 
