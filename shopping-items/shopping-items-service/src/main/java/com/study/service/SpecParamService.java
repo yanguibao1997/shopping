@@ -14,6 +14,4 @@ public interface SpecParamService {
     public void updateSpecParam(SpecParam specParam);
 
     public void deleteSpecParam(Long id);
-
-    public List<SpecParam> querySpecParamByCidGidMine(Long cid, Long gid);
 }

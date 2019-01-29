@@ -24,13 +24,6 @@ public class SpecParamServiceImpl implements SpecParamService{
     }
 
     @Override
-    public List<SpecParam> querySpecParamByCidGidMine(Long cid, Long gid) {
-        List<SpecParam> specParams = specParamMapper.querySpecParamByCidGidMine(cid,gid);
-        return specParams;
-    }
-
-
-    @Override
     public void addSpecParam(SpecParam specParam) {
         specParamMapper.insertSelective(specParam);
     }
