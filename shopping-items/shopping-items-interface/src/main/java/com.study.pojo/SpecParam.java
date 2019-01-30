@@ -15,19 +15,19 @@ public class SpecParam {
 
 //    是否是数字类型参数，true或false     现改为0  和 1
     @Column(name = "`numeric`")
-//    private boolean numeric;
-    private Integer numeric;
+    private Boolean numeric;
+//    private Integer numeric;
 
 //    数字类型参数的单位，非数字类型可以为空
     private String unit;
 
 //    是否是sku通用属性，true或false 现改为0  和 1
-//    private boolean generic;
-    private Integer generic;
+    private Boolean generic;
+//    private Integer generic;
 
 //    是否用于搜索过滤，true或false  现改为0  和 1
-//    private boolean searching;
-    private Integer searching;
+    private Boolean searching;
+//    private Integer searching;
 
 //    数值类型参数，如果需要搜索，则添加分段间隔值，如CPU频率间隔：0.5-1.0
     private String segments;
@@ -64,11 +64,11 @@ public class SpecParam {
         this.name = name;
     }
 
-    public Integer getNumeric() {
+    public Boolean getNumeric() {
         return numeric;
     }
 
-    public void setNumeric(Integer numeric) {
+    public void setNumeric(Boolean numeric) {
         this.numeric = numeric;
     }
 
@@ -80,19 +80,19 @@ public class SpecParam {
         this.unit = unit;
     }
 
-    public Integer getGeneric() {
+    public Boolean getGeneric() {
         return generic;
     }
 
-    public void setGeneric(Integer generic) {
+    public void setGeneric(Boolean generic) {
         this.generic = generic;
     }
 
-    public Integer getSearching() {
+    public Boolean getSearching() {
         return searching;
     }
 
-    public void setSearching(Integer searching) {
+    public void setSearching(Boolean searching) {
         this.searching = searching;
     }
 
