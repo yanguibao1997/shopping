@@ -3,10 +3,12 @@ package com.study.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.study.bo.SpuBo;
+import com.study.mapper.SkuMapper;
 import com.study.mapper.SpuMapper;
 import com.study.page.PageResult;
 import com.study.pojo.Brand;
 import com.study.pojo.Category;
+import com.study.pojo.Sku;
 import com.study.pojo.Spu;
 import com.study.service.BrandService;
 import com.study.service.CategoryService;
@@ -19,6 +21,7 @@ import tk.mybatis.mapper.entity.Example;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,6 +36,9 @@ public class SpuServiceImpl implements SpuService {
 
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private SkuMapper skuMapper;
 
     @Override
     public PageResult<SpuBo> querySpuByPage(Integer pageNo, Integer pageSize, String key, Boolean saleable) {
@@ -73,5 +79,40 @@ public class SpuServiceImpl implements SpuService {
 
         PageInfo<SpuBo> spuBoPageInfo = new PageInfo<>(spuBoList);
         return new PageResult<>(new PageInfo<>(spus).getTotal(),spuBoPageInfo.getList());
+    }
+
+    @Override
+    public void addSpu(Spu spu) {
+//        设置为下架
+        spu.setSaleable(false);
+//        设置有效
+        spu.setValid(true);
+//        设置创建时间
+        spu.setCreateTime(new Date());
+//        设置更新时间
+        spu.setLastUpdateTime(new Date());
+
+//        增加数据
+        spuMapper.insertSelective(spu);
+    }
+
+    @Override
+    public void updateSpu(Spu spu) {
+//        修改最新时间
+        spu.setLastUpdateTime(new Date());
+        spuMapper.updateByPrimaryKey(spu);
+    }
+
+    /**
+     * 上下架商品
+     * @param spuId
+     */
+    @Override
+    public void upOrDownSpuBySpuId(Long spuId,Boolean saleable) {
+        Spu spu = spuMapper.selectByPrimaryKey(spuId);
+
+        spu.setLastUpdateTime(new Date());
+        spu.setSaleable(saleable);
+        spuMapper.updateByPrimaryKey(spu);
     }
 }
