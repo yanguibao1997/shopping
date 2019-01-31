@@ -10,9 +10,7 @@ import com.study.pojo.Brand;
 import com.study.pojo.Category;
 import com.study.pojo.Sku;
 import com.study.pojo.Spu;
-import com.study.service.BrandService;
-import com.study.service.CategoryService;
-import com.study.service.SpuService;
+import com.study.service.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +36,10 @@ public class SpuServiceImpl implements SpuService {
     private CategoryService categoryService;
 
     @Autowired
-    private SkuMapper skuMapper;
+    private SkuService skuService;
+
+    @Autowired
+    private StockService stockService;
 
     @Override
     public PageResult<SpuBo> querySpuByPage(Integer pageNo, Integer pageSize, String key, Boolean saleable) {
@@ -113,6 +114,26 @@ public class SpuServiceImpl implements SpuService {
 
         spu.setLastUpdateTime(new Date());
         spu.setSaleable(saleable);
+        spuMapper.updateByPrimaryKey(spu);
+    }
+
+    @Override
+    public void deleteSpuBySpuId(Long spuId) {
+//        首先查出SKU   删除所有SKU和库存
+        List<Sku> skus = skuService.querySkuBySpuId(spuId);
+        skus.forEach( sku -> {
+//            根据SKU 删除所有库存
+            Long skuId = sku.getId();
+            stockService.deleteStockBySkuId(skuId);
+        });
+
+//        删除SKU
+        skuService.deleteSkuBySpuId(spuId);
+
+//        修改SPU为不可用
+        Spu spu = spuMapper.selectByPrimaryKey(spuId);
+        spu.setLastUpdateTime(new Date());
+        spu.setValid(false);
         spuMapper.updateByPrimaryKey(spu);
     }
 }

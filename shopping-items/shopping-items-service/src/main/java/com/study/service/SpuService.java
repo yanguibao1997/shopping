@@ -15,4 +15,6 @@ public interface SpuService {
     void updateSpu(Spu spu);
 
     void upOrDownSpuBySpuId(Long spuId,Boolean saleable);
+
+    void deleteSpuBySpuId(Long spuId);
 }

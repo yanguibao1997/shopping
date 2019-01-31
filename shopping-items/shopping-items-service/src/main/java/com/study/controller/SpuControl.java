@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/spu")
 public class SpuControl {
@@ -30,8 +32,18 @@ public class SpuControl {
     }
 
     @PutMapping("/upOrDownSpuBySpuId")
-    public ResponseEntity<Void> upOrDownSpuBySpuId(@RequestParam("spuId") Long spuId,@RequestParam("saleable") Boolean saleable){
-        spuService.upOrDownSpuBySpuId(spuId,saleable);
+    public ResponseEntity<Void> upOrDownSpuBySpuId(@RequestParam("spuIds") List<Long> spuIds, @RequestParam("saleable") Boolean saleable){
+        spuIds.forEach( spuId -> {
+            spuService.upOrDownSpuBySpuId(spuId,saleable);
+        });
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/deleteSpuBySpuId")
+    public ResponseEntity<Void> deleteSpuBySpuId(@RequestParam("spuIds") List<Long> spuIds){
+        spuIds.forEach( spuId -> {
+            spuService.deleteSpuBySpuId(spuId);
+        });
         return ResponseEntity.ok().build();
     }
 }
