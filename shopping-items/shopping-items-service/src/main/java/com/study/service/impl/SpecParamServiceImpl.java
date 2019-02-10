@@ -15,10 +15,13 @@ public class SpecParamServiceImpl implements SpecParamService{
     private SpecParamMapper specParamMapper;
 
     @Override
-    public List<SpecParam> querySpecParamByCidGid(Long cid, Long gid) {
+    public List<SpecParam> querySpecParamByCidGid(Long cid, Long gid, Boolean searching) {
         SpecParam specParam=new SpecParam();
         specParam.setCid(cid);
         specParam.setGroupId(gid);
+        if(searching!=null){
+            specParam.setSearching(searching);
+        }
         List<SpecParam> specParams = specParamMapper.select(specParam);
         return specParams;
     }

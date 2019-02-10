@@ -13,6 +13,7 @@
         <module>shopping-items</module>
         <module>shopping-common</module>
         <module>shopping-upload</module>
+        <module>shopping-search</module>
     </modules>
     <packaging>pom</packaging>
 

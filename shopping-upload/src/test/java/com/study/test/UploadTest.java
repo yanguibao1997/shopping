@@ -27,7 +27,7 @@ public class UploadTest {
 
     @Test
     public void testUpload() throws FileNotFoundException {
-        File file = new File("C:\\Users\\us\\Pictures\\Camera Roll\\ac18d31de25cd96a19cf29af707b2f89.jpg");
+        File file = new File("C:\\Users\\us\\Pictures\\Camera Roll\\aa.jpg");
 
 
         // 上传并且生成缩略图
@@ -40,7 +40,7 @@ public class UploadTest {
 
     @Test
     public void testUploadAndCreateThumb() throws FileNotFoundException {
-        File file = new File("D:\\test\\baby.png");
+        File file = new File("C:\\Users\\us\\Pictures\\Camera Roll\\aa.jpg");
         // 上传并且生成缩略图
         StorePath storePath = this.storageClient.uploadImageAndCrtThumbImage(
                 new FileInputStream(file), file.length(), "png", null);

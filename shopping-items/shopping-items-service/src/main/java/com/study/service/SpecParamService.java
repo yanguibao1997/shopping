@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface SpecParamService {
 
-    public List<SpecParam> querySpecParamByCidGid(Long cid,Long gid);
+    public List<SpecParam> querySpecParamByCidGid(Long cid,Long gid,Boolean searching);
 
     public void addSpecParam(SpecParam specParam);
 

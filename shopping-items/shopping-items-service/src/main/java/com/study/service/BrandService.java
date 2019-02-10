@@ -22,4 +22,6 @@ public interface BrandService {
     public Brand queryBrandByBid(Long bid);
 
     public List<Brand> queryBrandByCid(Long cid);
+
+    Brand queryBrandById(Long bid);
 }

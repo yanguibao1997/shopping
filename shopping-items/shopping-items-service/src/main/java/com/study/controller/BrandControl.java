@@ -84,4 +84,13 @@ public class BrandControl {
         }
         return ResponseEntity.ok(brands);
     }
+
+    @GetMapping("/queryBrandById")
+    public ResponseEntity<Brand> queryBrandById(@RequestParam("bid") Long bid){
+        Brand brand = brandService.queryBrandById(bid);
+        if(brand==null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.ok(brand);
+    }
 }

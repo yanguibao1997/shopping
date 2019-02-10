@@ -16,8 +16,5 @@
         <module>shopping-items-interface</module>
         <module>shopping-items-service</module>
     </modules>
-    <!-- 打包方式为pom -->
     <packaging>pom</packaging>
-
-
 </project>

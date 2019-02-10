@@ -18,9 +18,10 @@ public class SpecParamControl {
     @GetMapping("/querySpecParamByCidGid")
     public ResponseEntity<List<SpecParam>> querySpecParamByCidGid(
             @RequestParam (value = "cid",required = false) Long cid,
-            @RequestParam(value = "gid",required = false) Long gid
+            @RequestParam(value = "gid",required = false) Long gid,
+            @RequestParam(value = "searching",required = false) Boolean searching
     ){
-        List<SpecParam> specParams=specParamService.querySpecParamByCidGid(cid, gid);
+        List<SpecParam> specParams=specParamService.querySpecParamByCidGid(cid, gid,searching);
         return ResponseEntity.ok(specParams);
     }
 

@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -107,5 +108,15 @@ public class CategoryControl {
             }
         }
         return ResponseEntity.status(HttpStatus.NOT_MODIFIED).body("删除失败");
+    }
+
+
+    @GetMapping("/queryCategoryNameByIds")
+    public ResponseEntity<List<String>> queryCategoryNameByIds(@RequestParam("ids") List<Long> ids){
+        List<String> categoryNames=new ArrayList<>();
+        ids.forEach( id -> {
+            categoryNames.add(categoryService.queryById(id).getName());
+        });
+        return ResponseEntity.ok(categoryNames);
     }
 }
