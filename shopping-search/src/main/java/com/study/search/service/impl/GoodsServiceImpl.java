@@ -3,18 +3,28 @@ package com.study.search.service.impl;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.study.api.SkuApi;
 import com.study.bo.SpuBo;
+import com.study.page.PageResult;
 import com.study.pojo.Brand;
 import com.study.pojo.Sku;
 import com.study.pojo.SpecParam;
 import com.study.pojo.SpuDetail;
 import com.study.search.feignclient.*;
 import com.study.search.pojo.Goods;
+import com.study.search.pojo.SearchPage;
+import com.study.search.repository.GoodsRepository;
 import com.study.search.service.GoodsService;
 import com.study.utils.JsonUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.sort.SortBuilders;
+import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.elasticsearch.core.query.FetchSourceFilter;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -35,6 +45,9 @@ public class GoodsServiceImpl implements GoodsService{
 
     @Autowired
     private SpecParamClient specParamClient;
+
+    @Autowired
+    private GoodsRepository goodsRepository;
 
     /**
      * 根据 spu 然后来补充Goods中的属性
@@ -83,7 +96,7 @@ public class GoodsServiceImpl implements GoodsService{
         Map<Long,String> genericSpecMap=JsonUtils.parseMap(spuDetail.getGenericSpec(),Long.class,String.class);
         Map<Long,List<String>> specialSpecMap=JsonUtils.nativeRead(spuDetail.getSpecialSpec(), new TypeReference<Map<Long,List<String>>>() {});
 //        查询 所有可以搜索的参数规格参数
-        List<SpecParam> specParams = specParamClient.querySpecParamByCidGid(null, null, true);
+        List<SpecParam> specParams = specParamClient.querySpecParamByCidGid(goods.getCid3(), null, true);
 
         Map<String,Object> specs=new HashMap<>();
         for (SpecParam specParam : specParams) {
@@ -106,6 +119,58 @@ public class GoodsServiceImpl implements GoodsService{
         return goods;
     }
 
+    /**
+     * 搜索Goods
+     * @param searchPage
+     * @return
+     */
+    @Override
+    public PageResult<Goods> searchGoodsPage(SearchPage searchPage) {
+        String key = searchPage.getKey();
+
+//        创建查询
+        NativeSearchQueryBuilder nativeSearchQueryBuilder=new NativeSearchQueryBuilder();
+
+//        对结果进行筛选  拿出需要就可以  提高效率
+        nativeSearchQueryBuilder.withSourceFilter(new FetchSourceFilter(new String[]{"id","skus","subTitle","price"},null));
+
+//        查询  ----->  key  与  all(可分词   标题+分类+品牌)
+        nativeSearchQueryBuilder.withQuery(QueryBuilders.matchQuery("all",key));
+
+        String sortBy = searchPage.getSortBy();
+        Boolean descending = searchPage.getDescending();
+//        排序
+        if(StringUtils.isNotBlank(searchPage.getSortBy())){
+            nativeSearchQueryBuilder.withSort(SortBuilders.fieldSort(sortBy).order(descending? SortOrder.DESC : SortOrder.ASC));
+        }
+
+//        进行分页  ---->elasticSearch默认从0开始
+        Integer pageNo = searchPage.getPageNo();
+        Integer pageSize = searchPage.getPageSize();
+
+        nativeSearchQueryBuilder.withPageable(PageRequest.of(pageNo-1,pageSize));
+
+        Page<Goods> search = goodsRepository.search(nativeSearchQueryBuilder.build());
+
+//        解析结果
+        long totalElements = search.getTotalElements();
+        long totalPage;
+        if(totalElements%searchPage.getPageSize()!=0){
+            totalPage = (totalElements/searchPage.getPageSize())+1;
+        }else{
+            totalPage = totalElements/searchPage.getPageSize();
+        }
+
+        return new PageResult<Goods>(totalElements,totalPage,search.getContent());
+    }
+
+
+    /**
+     * 计算数值特有属性的区间
+     * @param value
+     * @param p
+     * @return
+     */
     private String chooseSegment(String value, SpecParam p) {
         double val = NumberUtils.toDouble(value);
         String result = "其它";
