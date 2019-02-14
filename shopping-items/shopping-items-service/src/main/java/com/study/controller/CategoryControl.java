@@ -119,4 +119,13 @@ public class CategoryControl {
         });
         return ResponseEntity.ok(categoryNames);
     }
+
+    @GetMapping("/queryCategoryByids")
+    public ResponseEntity<List<Category>> queryCategoryByids(@RequestParam("ids") List<Long> ids){
+        List<Category> categories=new ArrayList<>();
+        ids.forEach( id -> {
+            categories.add(categoryService.queryById(id));
+        });
+        return ResponseEntity.ok(categories);
+    }
 }

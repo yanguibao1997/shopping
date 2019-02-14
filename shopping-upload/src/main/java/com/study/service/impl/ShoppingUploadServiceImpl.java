@@ -4,6 +4,7 @@ import com.github.tobato.fastdfs.domain.StorePath;
 import com.github.tobato.fastdfs.service.FastFileStorageClient;
 import com.study.controller.ShoppingUploadControl;
 import com.study.service.ShoppingUploadService;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +48,7 @@ public class ShoppingUploadServiceImpl implements ShoppingUploadService {
 //          上传到FastDFS 返回路径
 //            文件后缀名
             String suffix = StringUtils.substringAfterLast(file.getOriginalFilename(), ".");
+//            String extension = FilenameUtils.getExtension(file.getOriginalFilename());
             StorePath storePath = fastFileStorageClient.uploadFile(file.getInputStream(), file.getSize(), suffix, null);
 
 

@@ -1,8 +1,7 @@
 package com.study.search.controller;
 
-import com.study.page.PageResult;
-import com.study.search.pojo.Goods;
 import com.study.search.pojo.SearchPage;
+import com.study.search.pojo.SearchPageResult;
 import com.study.search.service.GoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,11 +24,11 @@ public class GoodsSearchControl {
      * @return
      */
     @PostMapping("/searchPage")
-    public ResponseEntity<PageResult<Goods>> searchPage(@RequestBody SearchPage searchPage){
-        PageResult<Goods> goodsPageResult = goodsService.searchGoodsPage(searchPage);
-        if (goodsPageResult == null) {
+    public ResponseEntity<SearchPageResult> searchPage(@RequestBody SearchPage searchPage){
+        SearchPageResult searchPageResult = goodsService.searchGoodsPage(searchPage);
+        if (searchPageResult == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return ResponseEntity.ok(goodsPageResult);
+        return ResponseEntity.ok(searchPageResult);
     }
 }

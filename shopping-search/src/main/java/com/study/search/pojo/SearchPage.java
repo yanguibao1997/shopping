@@ -1,5 +1,8 @@
 package com.study.search.pojo;
 
+import java.util.List;
+import java.util.Map;
+
 public class SearchPage {
     private String key;// 搜索条件
 
@@ -17,6 +20,9 @@ public class SearchPage {
 
 //    是否降序
     private Boolean descending;
+
+//    过滤字段
+    private Map<String,String> searchFilters;
 
     public String getSortBy() {
         return sortBy;
@@ -74,5 +80,13 @@ public class SearchPage {
 
     public void setStartRow(Integer startRow) {
         this.startRow = startRow;
+    }
+
+    public Map<String, String> getSearchFilters() {
+        return searchFilters;
+    }
+
+    public void setSearchFilters(Map<String, String> searchFilters) {
+        this.searchFilters = searchFilters;
     }
 }
