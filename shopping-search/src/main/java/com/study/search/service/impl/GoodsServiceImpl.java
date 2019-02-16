@@ -336,9 +336,11 @@ public class GoodsServiceImpl implements GoodsService{
             for (Map.Entry<String, String> entry : filters.entrySet()) {
                 String key = entry.getKey();
                 String value = entry.getValue();
-
-                key=(key=="categories")?"cid3":("specs."+key+".keyword");
-                key=(key=="brands")?"brandId":("specs."+key+".keyword");
+                if(key=="categories" || key=="brands"){
+                    key=(key=="categories")?"cid3":"brandId";
+                }else{
+                    key=("specs."+key+".keyword");
+                }
 
                 boolQueryBuilder.must(QueryBuilders.termQuery(key, value));
             }

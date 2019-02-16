@@ -2,6 +2,7 @@ package com.study.api;
 
 import com.study.bo.SpuBo;
 import com.study.page.PageResult;
+import com.study.pojo.Spu;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,4 +23,7 @@ public interface SpuApi {
 
     @DeleteMapping("/deleteSpuBySpuId")
     void deleteSpuBySpuId(@RequestParam("spuIds") List<Long> spuIds);
+
+    @GetMapping("/querySpuBySpuId")
+    Spu querySpuBySpuId(@RequestParam("spuId") Long spuId);
 }

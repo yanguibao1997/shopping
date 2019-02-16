@@ -1,9 +1,7 @@
 package com.study.pojo;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 
 @Table(name = "tb_spec_group")
 public class SpecGroup {
@@ -12,6 +10,9 @@ public class SpecGroup {
     private Long id;
     private Long cid;
     private String name;
+
+    @Transient
+    private List<SpecParam> specParams;
 
     public Long getId() {
         return id;
@@ -35,5 +36,13 @@ public class SpecGroup {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<SpecParam> getSpecParams() {
+        return specParams;
+    }
+
+    public void setSpecParams(List<SpecParam> specParams) {
+        this.specParams = specParams;
     }
 }

@@ -17,4 +17,6 @@ public interface SpuService {
     void upOrDownSpuBySpuId(Long spuId,Boolean saleable);
 
     void deleteSpuBySpuId(Long spuId);
+
+    Spu querySpuBySpuId(Long spuId);
 }

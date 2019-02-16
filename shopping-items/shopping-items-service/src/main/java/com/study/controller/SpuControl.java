@@ -2,6 +2,7 @@ package com.study.controller;
 
 import com.study.bo.SpuBo;
 import com.study.page.PageResult;
+import com.study.pojo.Spu;
 import com.study.service.SpuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -45,5 +46,14 @@ public class SpuControl {
             spuService.deleteSpuBySpuId(spuId);
         });
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/querySpuBySpuId")
+    public ResponseEntity<Spu> querySpuBySpuId(@RequestParam("spuId") Long spuId){
+        Spu spu = spuService.querySpuBySpuId(spuId);
+        if(spu==null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        return ResponseEntity.ok(spu);
     }
 }

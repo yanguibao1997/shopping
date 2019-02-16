@@ -136,4 +136,10 @@ public class SpuServiceImpl implements SpuService {
         spu.setValid(false);
         spuMapper.updateByPrimaryKey(spu);
     }
+
+    @Override
+    public Spu querySpuBySpuId(Long spuId) {
+        Spu spu = spuMapper.selectByPrimaryKey(spuId);
+        return spu;
+    }
 }
