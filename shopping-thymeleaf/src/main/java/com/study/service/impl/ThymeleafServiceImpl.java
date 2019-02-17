@@ -57,6 +57,10 @@ public class ThymeleafServiceImpl implements ThymeleafService {
         List<Sku> skus = skuClient.querySkuBySpuId(spuId);
         allMap.put("skusKey",skus);
 
+//        specParam
+        List<SpecParam> specParams1 = specParamClient.querySpecParamByCidGid(spu.getCid3(), null, null);
+        allMap.put("specParamsKey",specParams1);
+
 //        获得组以及参数
         List<SpecGroup> specGroups = specGroupClient.querySpecGroupByCid(spu.getCid3());
 //        将参数带上
@@ -77,6 +81,7 @@ public class ThymeleafServiceImpl implements ThymeleafService {
 
 //        spuDetail
         SpuDetail spuDetail = spuDetailClient.querySpuDetailBySpuId(spuId);
+        allMap.put("spuDetailKey",spuDetail);
         Map<Long, Object> genericSpecMap = JsonUtils.parseMap(spuDetail.getGenericSpec(), Long.class, Object.class);
         Map<String, Object> specialSpectMap = JsonUtils.nativeRead(spuDetail.getSpecialSpec(), new TypeReference<Map<String, Object>>() {});
         allMap.put("genericSpecMapKey",genericSpecMap);

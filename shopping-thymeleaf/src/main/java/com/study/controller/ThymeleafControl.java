@@ -1,5 +1,6 @@
 package com.study.controller;
 
+import com.study.service.FileService;
 import com.study.service.ThymeleafService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,12 +18,21 @@ public class ThymeleafControl {
     @Autowired
     private ThymeleafService thymeleafService;
 
+    @Autowired
+    private FileService fileService;
+
 
     @GetMapping("/{spuId}.html")
     public String loadThymeleaf(@PathVariable("spuId") Long spuId, Model model){
 
         Map<String, Object> allMap = thymeleafService.loadThymeleaf(spuId);
         model.addAllAttributes(allMap);
+
+        // 判断是否需要生成新的页面
+        if(!this.fileService.exists(spuId)){
+            this.fileService.syncCreateHtml(spuId);
+        }
+
         return "item";
     }
 }
