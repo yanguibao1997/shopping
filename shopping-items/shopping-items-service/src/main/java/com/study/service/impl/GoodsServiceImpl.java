@@ -1,13 +1,18 @@
 package com.study.service.impl;
 
 import com.study.bo.SpuBo;
+import com.study.controller.GoodsControl;
 import com.study.pojo.Sku;
 import com.study.pojo.Spu;
 import com.study.pojo.SpuDetail;
 import com.study.pojo.Stock;
 import com.study.service.*;
 import org.apache.ibatis.annotations.Delete;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +32,15 @@ public class GoodsServiceImpl implements GoodsService {
 
     @Autowired
     private StockService stockService;
+
+    @Autowired
+    private AmqpTemplate amqpTemplate;
+
+    /*@Value("${spring.rabbitmq.template.retry.exchange}")
+//    在这里默认是不需要定义的    在配置文件中已经定义了
+    private String defaultExchange;*/
+
+    Logger logger= LoggerFactory.getLogger(GoodsService.class);
 
     @Override
     @Transactional
@@ -49,6 +63,8 @@ public class GoodsServiceImpl implements GoodsService {
         List<Sku> skus = spuBo.getSkus();
         skuService.addSku(skus,spu.getId());
 
+//        更新完成发送消息   发送spuId
+        this.sendMessage(spu.getId(),"insert");
     }
 
     @Override
@@ -69,6 +85,9 @@ public class GoodsServiceImpl implements GoodsService {
 
 //        跟新 spuDetail
         spuDetailService.updateSpuDetail(spuBo.getSpuDetail());
+
+        //        修改完成发送消息   发送spuId
+        this.sendMessage(spuId,"update");
     }
 
     /**
@@ -86,5 +105,21 @@ public class GoodsServiceImpl implements GoodsService {
 
 //        删除库存
         skuService.deleteSkuBySpuId(spuId);
+    }
+
+
+    /**
+     * 发送消息到Rabbit
+     * @param spuId   品牌Id
+     * @param type    发送消息名称
+     */
+    private void sendMessage(Long spuId,String type){
+//        交换机(在yml中配置默认可不写)     rountingKey    消息内容
+        // 发送消息
+        try {
+            this.amqpTemplate.convertAndSend("item." + type, spuId);
+        } catch (Exception e) {
+            logger.error("{}商品消息发送异常，商品id：{}", type, spuId, e);
+        }
     }
 }

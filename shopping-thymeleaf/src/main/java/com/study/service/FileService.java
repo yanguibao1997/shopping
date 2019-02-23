@@ -4,7 +4,9 @@ import java.io.File;
 
 public interface FileService {
 
-    void createHtml(Long id) throws Exception;
+    void createHtml(Long spuId) throws Exception;
+
+    void deleteHtml(Long spuId);
 
     boolean exists(Long spuId);
 

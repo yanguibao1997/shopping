@@ -49,11 +49,12 @@ public class SpuServiceImpl implements SpuService {
         }
 //        查询
         Example example=new Example(Spu.class);
+        Example.Criteria criteria = example.createCriteria();
         if(StringUtils.isNotBlank(key)){
-            example.createCriteria().andLike("title","%"+key+"%");
+            criteria.andLike("title","%"+key+"%");
         }
         if(saleable!=null){
-            example.createCriteria().andEqualTo("saleable",saleable);
+            criteria.andEqualTo("saleable",saleable);
         }
 
         List<Spu> spus = spuMapper.selectByExample(example);

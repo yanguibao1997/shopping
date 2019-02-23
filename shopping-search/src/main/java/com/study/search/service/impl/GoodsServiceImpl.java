@@ -1,9 +1,8 @@
 package com.study.search.service.impl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.study.api.SkuApi;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.study.bo.SpuBo;
-import com.study.page.PageResult;
 import com.study.pojo.*;
 import com.study.search.feignclient.*;
 import com.study.search.pojo.Goods;
@@ -25,15 +24,18 @@ import org.elasticsearch.search.aggregations.bucket.terms.LongTerms;
 import org.elasticsearch.search.aggregations.bucket.terms.StringTerms;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
 import org.springframework.data.elasticsearch.core.query.FetchSourceFilter;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.*;
 @Service
 public class GoodsServiceImpl implements GoodsService{
@@ -41,7 +43,7 @@ public class GoodsServiceImpl implements GoodsService{
 //   聚合分类的名称
     public static final String AGGS_CATEGORY="category";
 //    聚合品牌的名称
-    public static final String AGGS_BRANDID="brandId";;
+    public static final String AGGS_BRANDID="brandId";
 
     @Autowired
     private CategoryClient categoryClient;
@@ -53,6 +55,9 @@ public class GoodsServiceImpl implements GoodsService{
     private SkuClient skuClient;
 
     @Autowired
+    private SpuClient spuClient;
+
+    @Autowired
     private SpuDetailClient spuDetailClient;
 
     @Autowired
@@ -60,6 +65,9 @@ public class GoodsServiceImpl implements GoodsService{
 
     @Autowired
     private GoodsRepository goodsRepository;
+
+    Logger logger= LoggerFactory.getLogger(GoodsServiceImpl.class);
+
 
     /**
      * 根据 spu 然后来补充Goods中的属性
@@ -208,7 +216,6 @@ public class GoodsServiceImpl implements GoodsService{
         return new SearchPageResult(totalElements,totalPage,search.getContent(),categories,brands,specs);
     }
 
-
     /**
      * 计算数值特有属性的区间
      * @param value
@@ -348,4 +355,81 @@ public class GoodsServiceImpl implements GoodsService{
         }
         return queryBuilder;
     }
+
+
+    @Override
+    public void createIndex(Long spuId) throws IOException {
+        // 查询spu
+        Spu spu = this.spuClient.querySpuBySpuId(spuId);
+        if(null == spu){
+            logger.error("索引对应的spu不存在，spuId：{}", spuId);
+            // 抛出异常，让消息回滚
+            throw new RuntimeException();
+        }
+        // 查询sku信息
+        List<Sku> skus = this.skuClient.querySkuBySpuId(spuId);
+        // 查询详情
+        SpuDetail spuDetail = this.spuDetailClient.querySpuDetailBySpuId(spuId);
+        // 查询商品分类名称
+        List<String> strings = this.categoryClient.queryCategoryNameByIds(Arrays.asList(spu.getCid1(), spu.getCid2(), spu.getCid3()));
+        if (null == skus || null == spuDetail || null ==strings ) {
+            logger.error("索引对应的spu详情及sku不存在，spuId：{}", spuId);
+            // 抛出异常，让消息回滚
+            throw new RuntimeException();
+        }
+
+        // 准备sku集合
+        List<Map<String, Object>> skuList = new ArrayList<>();
+        // 准备价格集合
+        Set<Long> price = new HashSet<>();
+        for (Sku s : skus) {
+            price.add((long) s.getPrice());
+            Map<String, Object> sku = new HashMap<>();
+            sku.put("id", s.getId());
+            sku.put("price", s.getPrice());
+            sku.put("image", StringUtils.isBlank(s.getImages()) ? "" : s.getImages().split(",")[0]);
+            sku.put("title", s.getTitle());
+            skuList.add(sku);
+        }
+
+        ObjectMapper mapper=new ObjectMapper();
+        // 获取商品详情中的规格模板
+        List<Map<String, Object>> specTemplate = mapper.readValue(spuDetail.getSpecialSpec(), new TypeReference<List<Map<String, Object>>>() {});
+        Map<String, Object> specs = new HashMap<>();
+        // 过滤规格模板，把所有可搜索的信息保存到Map中
+        specTemplate.forEach(m -> {
+            List<Map<String, Object>> params = (List<Map<String, Object>>) m.get("params");
+            params.forEach(p -> {
+                if ((boolean) p.get("searchable")) {
+                    if (p.get("v") != null) {
+                        specs.put(p.get("k").toString(), p.get("v"));
+                    } else if (p.get("options") != null) {
+                        specs.put(p.get("k").toString(), p.get("options"));
+                    }
+                }
+            });
+        });
+
+        Goods goods = new Goods();
+        goods.setBrandId(spu.getBrandId());
+        goods.setCid1(spu.getCid1());
+        goods.setCid2(spu.getCid2());
+        goods.setCid3(spu.getCid3());
+        goods.setCreateTime(spu.getCreateTime());
+        goods.setId(spu.getId());
+        goods.setSubTitle(spu.getSubTitle());
+        goods.setAll(spu.getTitle() + " " + StringUtils.join(strings, " ")); //全文检索字段
+        goods.setPrice(new ArrayList<>(price));
+        goods.setSkus(mapper.writeValueAsString(skuList));
+        goods.setSpecs(specs);
+
+        // 保存数据到索引库
+        this.goodsRepository.save(goods);
+    }
+
+    @Override
+    public void deleteIndex(Long spuId) {
+        goodsRepository.deleteById(spuId);
+    }
+
 }

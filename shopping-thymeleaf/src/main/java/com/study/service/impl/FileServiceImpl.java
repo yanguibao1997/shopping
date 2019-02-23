@@ -66,7 +66,12 @@ public class FileServiceImpl implements FileService{
                 temp.delete();
             }
         }
+    }
 
+    @Override
+    public void deleteHtml(Long spuId) {
+        File file = new File(this.destPath, spuId + ".html");
+        file.deleteOnExit();
     }
 
     private File createPath(Long spuId) {

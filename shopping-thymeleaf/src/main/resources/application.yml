@@ -5,6 +5,11 @@ spring:
     cache: false
   application:
     name: shopping-thymeleaf
+  rabbitmq:
+    host: 192.168.138.202
+    username: shopping
+    password: 123456
+    virtual-host: /shopping
 eureka:
   client:
     service-url:
@@ -18,3 +23,4 @@ eureka:
 shopping:
   thymeleaf:
     destPath: D:\softForInstall\nginx-1.12.2\html\item
+
