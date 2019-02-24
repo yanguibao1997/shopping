@@ -18,6 +18,7 @@ zuul:
   routes:
     shopping-items-service: /item/**  # 将商品微服务映射到/item/**
     shopping-search: /search/**     # 将搜索微服务映射到/search/**
+    shopping-user-service: /user/** # 将用户微服务映射到/search/**
   ignored-services:
       - shopping-upload # 忽略upload-service服务
 ribbon:

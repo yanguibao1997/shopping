@@ -15,6 +15,8 @@
         <module>shopping-upload</module>
         <module>shopping-search</module>
         <module>shopping-thymeleaf</module>
+        <module>shopping-user</module>
+        <module>shopping-message</module>
     </modules>
     <packaging>pom</packaging>
 

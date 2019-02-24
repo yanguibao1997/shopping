@@ -1,0 +1,10 @@
+server:
+  port: 8085
+spring:
+  application:
+    name: shopping-message-service
+  rabbitmq:
+    host: 192.168.138.202
+    username: shopping
+    password: 123456
+    virtual-host: /shopping
