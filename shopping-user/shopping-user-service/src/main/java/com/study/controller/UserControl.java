@@ -1,5 +1,6 @@
 package com.study.controller;
 
+import com.study.pojo.User;
 import com.study.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -40,6 +41,15 @@ public class UserControl {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @PostMapping("/userRegister")
+    public ResponseEntity<String> userRegister(User user,String code){
+        Boolean aBoolean = userService.userRegister(user, code);
+        if(!aBoolean){
+            return  ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+        return ResponseEntity.ok("注册成功");
     }
 
 }
