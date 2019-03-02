@@ -1,0 +1,24 @@
+server:
+  port: 8086
+spring:
+  application:
+    name: shopping-auth-service
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:5200/eureka
+    registry-fetch-interval-seconds: 10
+  instance:
+    lease-renewal-interval-in-seconds: 5 # 每隔5秒发送一次心跳
+    lease-expiration-duration-in-seconds: 10 # 10秒不发送就过期
+    prefer-ip-address: true
+    ip-address: 127.0.0.1
+    instance-id: ${spring.application.name}:${server.port}
+shopping:
+  jwt:
+    secret: shoping@Login(Auth}*^8734)&User% # 登录校验的密钥
+    pubKeyPath: E:/JWT/rsa.pub # 公钥地址
+    priKeyPath: E:/JWT/rsa.pri # 私钥地址
+    expire: 30 # 过期时间,单位分钟
+    cookieName: shopping_token # cookie名称
+    cookieMaxAge: 1800  # cookie的过期时间

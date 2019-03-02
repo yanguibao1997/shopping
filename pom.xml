@@ -17,6 +17,8 @@
         <module>shopping-thymeleaf</module>
         <module>shopping-user</module>
         <module>shopping-message</module>
+        <module>shopping-auth-center</module>
+        <module>shopping-auth-center</module>
     </modules>
     <packaging>pom</packaging>
 

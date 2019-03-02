@@ -10,9 +10,11 @@ import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -79,6 +81,7 @@ public class UserServiceImpl implements UserService {
      * @return
      */
     @Override
+    @Transactional
     public Boolean userRegister(User user, String code) {
 //        首先从redis中获得验证码     获得完删除
         String codeKey="user:code:"+user.getPhone();
@@ -99,15 +102,43 @@ public class UserServiceImpl implements UserService {
 //        设置手机号
         user.setPhone(user.getPhone());
 //        插入数据库
-        Boolean b=userMapper.insertSelective(user)==0;
+        Boolean b=userMapper.insertSelective(user)>0;
         // 如果注册成功，删除redis中的code
         if (b) {
             try {
                 this.stringRedisTemplate.delete(codeKey);
+                return true;
             } catch (Exception e) {
                 logger.error("删除缓存验证码失败，code：{}", code, e);
             }
         }
         return false;
+    }
+
+    @Override
+    public User login(String userName, String password) {
+//        根据用户名查询用户
+        User user=new User();
+        user.setUsername(userName);
+        List<User> select = userMapper.select(user);
+        User u;
+        if(null != select && select.size()>0){
+            u=select.get(0);
+//            验证密码
+
+            String p = u.getPassword();
+            String salt = u.getSalt();
+
+            String s = CodeUtils.md5Hex(password, salt);
+            if(s.equals(p)){
+//                登录成功
+                return u;
+            }else{
+                logger.error("密码不正确");
+            }
+        }else{
+            logger.error("无此用户：{}",userName);
+        }
+        return null;
     }
 }

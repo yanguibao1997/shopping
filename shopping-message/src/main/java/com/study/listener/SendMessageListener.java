@@ -1,5 +1,6 @@
 package com.study.listener;
 
+import com.study.utils.MessageUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.amqp.core.ExchangeTypes;
 import org.springframework.amqp.rabbit.annotation.Exchange;

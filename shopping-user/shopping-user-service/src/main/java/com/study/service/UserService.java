@@ -9,4 +9,6 @@ public interface UserService {
     Boolean sendMessageCode(String phone);
 
     Boolean userRegister(User user,String code);
+
+    User login(String userName,String password);
 }

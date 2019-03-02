@@ -44,12 +44,21 @@ public class UserControl {
     }
 
     @PostMapping("/userRegister")
-    public ResponseEntity<String> userRegister(User user,String code){
+    public ResponseEntity<String> userRegister(User user,@RequestParam("code") String code){
         Boolean aBoolean = userService.userRegister(user, code);
         if(!aBoolean){
             return  ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
-        return ResponseEntity.ok("注册成功");
+        return ResponseEntity.status(HttpStatus.CREATED).body("注册成功");
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<User> login(@RequestParam("userName") String userName,@RequestParam("password") String password){
+        User user = userService.login(userName, password);
+        if(null == user){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+        return ResponseEntity.ok(user);
     }
 
 }
